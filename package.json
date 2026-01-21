@@ -1,0 +1,20 @@
+{
+  "name": "aegis",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -ws",
+    "clean": "rm -rf packages/**/dist",
+    "lint": "echo \"lint later\"",
+    "test": "echo \"tests later\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}

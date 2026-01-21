@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

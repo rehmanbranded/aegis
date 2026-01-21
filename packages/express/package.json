@@ -1,0 +1,16 @@
+{
+  "name": "@aegis/express",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "dependencies": {
+    "@aegis/core": "^0.1.0"
+  },
+  "peerDependencies": {
+    "express": ">=4"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts"
+  }
+}

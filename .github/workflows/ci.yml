@@ -1,15 +1,18 @@
 name: CI
 
 on:
-  pull_request:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
-  test:
-    name: ci-core-and-adapters
+  core-and-adapters:
+    name: Core & Adapter Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -19,10 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Build all packages
+        run: npm run build
 
       - name: Test @aegis/core
         run: npm run test -w @aegis/core

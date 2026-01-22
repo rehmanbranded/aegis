@@ -1,11 +1,18 @@
 {
   "name": "@aegis/core",
   "version": "0.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": ["dist"],
   "scripts": {
-    "build": "tsup src/index.ts --dts",
+    "build": "tsup src/index.ts --format esm --dts",
     "test": "vitest run"
   }
 }

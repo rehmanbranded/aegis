@@ -1,5 +1,5 @@
-import { emitEvent } from "./telemetry";
-import { getTextFragmentsFromURL } from "./utils";
+import { emitEvent } from "./telemetry.js";
+import { getTextFragmentsFromURL } from "./utils.js";
 
 /**
  * @public

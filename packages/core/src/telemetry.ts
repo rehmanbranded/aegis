@@ -1,4 +1,4 @@
-import { AegisEvent, TelemetrySink } from "./types";
+import { AegisEvent, TelemetrySink } from "./types.js";
 
 /**
  * @internal

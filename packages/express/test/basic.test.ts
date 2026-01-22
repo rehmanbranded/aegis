@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { Request, Response, NextFunction } from "express";
-import { aegis } from "../src";
+import { aegis } from "../src/index.js";
 import type { AegisEvent } from "@aegis/core";
 
 /**

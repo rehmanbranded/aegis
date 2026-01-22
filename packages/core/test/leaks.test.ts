@@ -3,7 +3,7 @@ import {
   detectSTTF,
   registerTelemetrySink,
   type AegisEvent,
-} from "../src";
+} from "../src/index.js";
 
 /**
  * @summary

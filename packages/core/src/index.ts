@@ -14,6 +14,6 @@
  * Adapters (e.g. `@aegis/express`, `@aegis/next`) must rely
  * exclusively on this surface.
  */
-export * from "./types";
-export * from "./telemetry";
-export * from "./leaks";
+export * from "./types.js";
+export * from "./telemetry.js";
+export * from "./leaks.js";

@@ -1,70 +1,72 @@
 /**
+ * @public
+ *
  * Enumeration of supported XS-Leak vectors.
  *
- * New values may be added, but existing values must
- * never change semantics once released.
+ * Stability contract:
+ * - New values MAY be added.
+ * - Existing values MUST NOT change semantics.
  */
 export type XSLeakVector = "STTF";
 
 /**
- * XS-Leak security event emitted by the core.
+ * @public
  *
- * This event represents detection of a browser-side
- * side-channel that may allow cross-origin inference.
+ * XS-Leak security event emitted by the Aegis core.
  */
 export type XSLeakEvent = {
   /**
    * Event domain discriminator.
-   * Allows consumers to safely narrow event shape.
    */
   kind: "XS_LEAK";
 
   /**
-   * Severity level of the event.
-   *
-   * INFO  – detection only
-   * WARN  – suspicious behavior
-   * ERROR – policy violation or invariant breach
+   * Severity associated with the event.
    */
   level: "INFO" | "WARN" | "ERROR";
 
   /**
-   * Specific XS-Leak technique detected.
+   * XS-Leak technique that triggered the event.
    */
   vector: XSLeakVector;
 
   /**
-   * Request path associated with the event, if known.
+   * Optional request path or logical route.
    */
   path?: string;
 
   /**
-   * Optional detail payload (e.g. URL fragment).
+   * Optional diagnostic detail.
    *
+   * @remarks
    * Must never contain sensitive user data.
    */
   detail?: string;
 
   /**
-   * Event timestamp (epoch milliseconds).
+   * Event timestamp in epoch milliseconds.
    */
   timestamp: number;
 };
 
 /**
+ * @public
+ *
  * Union of all Aegis security events.
  *
- * This type is part of the public contract and should
- * be extended using discriminated unions only.
+ * @remarks
+ * Extended only via discriminated unions.
  */
 export type AegisEvent = XSLeakEvent;
 
 /**
+ * @public
+ *
  * Telemetry sink function.
  *
- * A sink is a one-way consumer of events and must:
- *  - never throw
- *  - never block
- *  - never influence core behavior
+ * @remarks
+ * - Must never throw
+ * - Must never block
+ * - Must never affect core behavior
  */
 export type TelemetrySink = (event: AegisEvent) => void;

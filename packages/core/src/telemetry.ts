@@ -1,32 +1,50 @@
 import { AegisEvent, TelemetrySink } from "./types";
 
 /**
- * Registered telemetry sink.
- * Null means telemetry is disabled.
+ * @internal
+ *
+ * Active telemetry sink.
+ *
+ * @remarks
+ * Null indicates telemetry is disabled.
+ * Only a single sink is supported by design.
  */
 let sink: TelemetrySink | null = null;
 
 /**
- * Register a telemetry sink.
+ * @public
  *
- * This is optional and should be called by
- * monitoring or integration layers.
+ * Register a telemetry sink to receive security events.
+ *
+ * @param fn - Telemetry sink implementation.
+ *
+ * @remarks
+ * - Optional
+ * - Replaces any existing sink
+ * - Must be fail-safe
  */
-export function registerTelemetrySink(fn: TelemetrySink) {
+export function registerTelemetrySink(fn: TelemetrySink): void {
   sink = fn;
 }
 
 /**
+ * @public
+ *
  * Emit a security event.
  *
- * This function must never throw or block.
+ * @param event - Structured security event.
+ *
+ * @remarks
+ * - Sole egress point for core telemetry
+ * - Must never throw
+ * - Silently drops events if no sink is registered
  */
-export function emitEvent(event: AegisEvent) {
+export function emitEvent(event: AegisEvent): void {
   if (!sink) return;
 
   try {
     sink(event);
   } catch {
-    // Fail silently by design
+    // Fail-silent by design
   }
 }

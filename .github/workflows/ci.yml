@@ -1,14 +1,14 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+  push:
+    branches:
+      - main
 
 jobs:
   test:
-    name: ci-core
+    name: ci-core-and-adapters
     runs-on: ubuntu-latest
 
     steps:
@@ -18,11 +18,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: 18
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run core tests
+      - name: Test @aegis/core
         run: npm run test -w @aegis/core
+
+      - name: Test @aegis/express
+        run: npm run test -w @aegis/express

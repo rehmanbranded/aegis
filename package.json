@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w",
-    "test": "npm run test -ws --if-present",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
     "clean": "rm -rf packages/**/dist",
     "lint": "eslint .",
     "format": "prettier --write ."

@@ -1,15 +1,29 @@
 /**
  * @internal
  *
- * Extract Scroll-To-Text Fragment (STTF) directives from a URL.
+ * @summary
+ * Extracts Scroll-To-Text Fragment (STTF) directives from a URL.
  *
- * @param url - Absolute or relative URL string.
- * @returns Array of decoded STTF directives, or null if absent.
+ * @param url - Absolute or relative URL string to inspect.
+ * @returns An array of decoded STTF directives, or `null` if none are present.
+ *
+ * @example
+ * ```text
+ * /page#:~:text=secret              => ["secret"]
+ * /page#:~:text=start,end           => ["start,end"]
+ * /page#:~:text=pre-,text,-suf      => ["pre-,text,-suf"]
+ * /page#:~:text=one&text=two        => ["one", "two"]
+ * ```
  *
  * @remarks
- * - Detection-only utility
- * - Does not interpret semantic meaning
- * - Presence alone is considered a signal
+ * This function performs **syntactic extraction only**.
+ *
+ * - Does not validate DOM state or scroll behavior
+ * - Does not interpret fragment semantics
+ * - Does not emit telemetry
+ *
+ * Presence of extracted directives is treated as a signal
+ * **only by higher-level detectors**.
  */
 export function getTextFragmentsFromURL(url: string): string[] | null {
   try {
@@ -33,6 +47,7 @@ export function getTextFragmentsFromURL(url: string): string[] | null {
 
     return texts.length > 0 ? texts : null;
   } catch {
+    // Invalid or unparsable URLs are ignored by design
     return null;
   }
 }

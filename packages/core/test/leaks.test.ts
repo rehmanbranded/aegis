@@ -6,20 +6,29 @@ import {
 } from "../src";
 
 /**
- * Core XS-Leak detection tests.
+ * @summary
+ * Core XS-Leak detection tests for Scroll-To-Text Fragment (STTF).
  *
- * These tests validate public, observable behavior only.
- * Internal helpers and implementation details are treated
- * as black boxes.
+ * @remarks
+ * These tests validate **public, observable behavior only**.
+ *
+ * - Internal helpers are treated as black boxes
+ * - No assumptions are made about implementation details
+ * - Telemetry emission is used as the primary observation mechanism
  */
-
-describe("Aegis core – STTF XS-Leak detection", () => {
+describe("Aegis core - STTF XS-Leak detection", () => {
   let events: AegisEvent[];
 
+  /**
+   * Reset telemetry capture before each test.
+   *
+   * @remarks
+   * A fresh sink is registered for every test to ensure
+   * isolation and deterministic assertions.
+   */
   beforeEach(() => {
     events = [];
 
-    // Register a safe telemetry sink for inspection
     registerTelemetrySink((event: AegisEvent) => {
       events.push(event);
     });
@@ -60,7 +69,7 @@ describe("Aegis core – STTF XS-Leak detection", () => {
     expect(events).toHaveLength(0);
   });
 
-  it("never throws if the telemetry sink throws", () => {
+  it("never throws even if the telemetry sink throws", () => {
     registerTelemetrySink(() => {
       throw new Error("sink failure");
     });

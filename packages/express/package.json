@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@aegis/core": "^0.1.0"
   },
@@ -11,6 +13,10 @@
     "express": ">=4"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts"
+    "build": "tsup src/index.ts --dts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/express": "~5.0.6"
   }
 }

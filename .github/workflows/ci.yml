@@ -2,15 +2,13 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
-    name: Test (@aegis/core)
+    name: ci-core
     runs-on: ubuntu-latest
 
     steps:

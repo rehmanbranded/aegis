@@ -1,0 +1,77 @@
+name: Bug report
+description: Report a reproducible bug in Aegis (non-security issues only)
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Security vulnerabilities must NOT be reported here.**
+
+        Please use **GitHub's private security advisory feature** instead:
+        **Security → Report a vulnerability**
+
+        Public issues containing security-sensitive details may be closed.
+
+  - type: input
+    id: affected-package
+    attributes:
+      label: Affected package
+      description: Which Aegis package is affected?
+      placeholder: "@aegis/core / @aegis/express / @aegis/next / @aegis/react / @aegis/monitor"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Aegis version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Runtime environment
+      options:
+        - Node.js
+        - Browser
+        - Edge / Serverless
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: |
+        Provide a minimal reproduction (code snippet or steps).
+        Issues without a clear reproduction may be closed.
+      render: ts
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack traces
+      description: Optional, but helpful.
+      render: shell

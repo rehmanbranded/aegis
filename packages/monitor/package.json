@@ -1,0 +1,10 @@
+{
+  "name": "@aegis/monitor",
+  "version": "0.1.0",
+  "bin": {
+    "aegis-monitor": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts"
+  }
+}

@@ -14,6 +14,15 @@
  * Adapters (e.g. `@aegis/express`, `@aegis/next`) must rely
  * exclusively on this surface.
  */
-export * from "./types.js";
-export * from "./telemetry.js";
-export * from "./leaks.js";
+export { extractSTTFDirectives } from "./leaks.js";
+
+export { registerTelemetrySink, emitEvent } from "./telemetry.js";
+
+export { parseSTTFFromURL } from "./utils.js";
+
+export type {
+  AegisEvent,
+  XSLeakEvent,
+  XSLeakVector,
+  TelemetrySink,
+} from "./types.js";

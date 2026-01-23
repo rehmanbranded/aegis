@@ -1,18 +1,30 @@
 {
   "name": "@aegis/next",
   "version": "0.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
-    "@aegis/core": "^0.1.0",
-    "@aegis/react": "^0.1.0"
+    "@aegis/core": "^0.1.0"
   },
   "peerDependencies": {
     "next": ">=13",
     "react": ">=18"
   },
+  "devDependencies": {
+    "next": "^15.0.0"
+  },
   "scripts": {
-    "build": "tsup src/index.ts --dts"
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run"
   }
 }

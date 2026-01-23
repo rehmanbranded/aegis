@@ -35,3 +35,7 @@ jobs:
 
       - name: Test @aegis/express
         run: npm run test -w @aegis/express
+
+      - name: Test @aegis/next
+        run: npm run test -w @aegis/next
+        

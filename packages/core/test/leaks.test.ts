@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import {
-  detectSTTF,
+  extractSTTFDirectives,
+  parseSTTFFromURL,
   registerTelemetrySink,
   type AegisEvent,
 } from "../src/index.js";
@@ -10,72 +11,109 @@ import {
  * Core XS-Leak detection tests for Scroll-To-Text Fragment (STTF).
  *
  * @remarks
- * These tests validate **public, observable behavior only**.
- *
- * - Internal helpers are treated as black boxes
- * - No assumptions are made about implementation details
- * - Telemetry emission is used as the primary observation mechanism
+ * These tests validate STTF syntax extraction from URL strings.
+ * They do NOT test real-world attack detection, which requires
+ * client-side instrumentation.
  */
-describe("Aegis core - STTF XS-Leak detection", () => {
+describe("Aegis core - STTF directive extraction", () => {
   let events: AegisEvent[];
 
-  /**
-   * Reset telemetry capture before each test.
-   *
-   * @remarks
-   * A fresh sink is registered for every test to ensure
-   * isolation and deterministic assertions.
-   */
   beforeEach(() => {
     events = [];
-
     registerTelemetrySink((event: AegisEvent) => {
       events.push(event);
     });
   });
 
-  it("detects simple Scroll-To-Text Fragment (STTF)", () => {
-    const result = detectSTTF("/page#:~:text=secret");
+  describe("parseSTTFFromURL", () => {
+    it("extracts single text directive", () => {
+      const result = parseSTTFFromURL("/page#:~:text=secret");
+      expect(result).toEqual(["secret"]);
+    });
 
-    expect(result).toBe(true);
-    expect(events).toHaveLength(1);
+    it("extracts range-based directive", () => {
+      const result = parseSTTFFromURL("/page#:~:text=start,end");
+      expect(result).toEqual(["start,end"]);
+    });
 
-    expect(events[0]).toMatchObject({
-      kind: "XS_LEAK",
-      vector: "STTF",
-      level: "INFO",
+    it("extracts context-based directive", () => {
+      const result = parseSTTFFromURL("/page#:~:text=prefix-,target,-suffix");
+      expect(result).toEqual(["prefix-,target,-suffix"]);
+    });
+
+    it("extracts multiple directives", () => {
+      const result = parseSTTFFromURL("/page#:~:text=one&text=two&text=three");
+      expect(result).toEqual(["one", "two", "three"]);
+    });
+
+    it("returns null for standard fragment", () => {
+      const result = parseSTTFFromURL("/page#section");
+      expect(result).toBeNull();
+    });
+
+    it("returns null when no fragment present", () => {
+      const result = parseSTTFFromURL("/page");
+      expect(result).toBeNull();
+    });
+
+    it("handles percent-encoded directives", () => {
+      const result = parseSTTFFromURL("/page#:~:text=hello%20world");
+      expect(result).toEqual(["hello world"]);
+    });
+
+    it("handles malformed URLs gracefully", () => {
+      const result = parseSTTFFromURL("not a valid url");
+      expect(result).toBeNull();
+    });
+
+    it("handles empty text directives", () => {
+      const result = parseSTTFFromURL("/page#:~:text=");
+      expect(result).toBeNull();
     });
   });
 
-  it("detects range-based STTF fragments", () => {
-    const result = detectSTTF("/page#:~:text=start,end");
+  describe("extractSTTFDirectives", () => {
+    it("returns true and emits event when STTF syntax present", () => {
+      const result = extractSTTFDirectives("/page#:~:text=secret", "/page");
 
-    expect(result).toBe(true);
-    expect(events).toHaveLength(1);
-  });
-
-  it("detects multiple STTF directives in a single URL", () => {
-    const result = detectSTTF("/page#:~:text=one&text=two");
-
-    expect(result).toBe(true);
-    expect(events).toHaveLength(1);
-    expect(events[0].detail).toBe("one;two");
-  });
-
-  it("returns false and emits no events when no STTF is present", () => {
-    const result = detectSTTF("/page#section1");
-
-    expect(result).toBe(false);
-    expect(events).toHaveLength(0);
-  });
-
-  it("never throws even if the telemetry sink throws", () => {
-    registerTelemetrySink(() => {
-      throw new Error("sink failure");
+      expect(result).toBe(true);
+      expect(events).toHaveLength(1);
+      expect(events[0]).toMatchObject({
+        kind: "XS_LEAK",
+        vector: "STTF",
+        level: "INFO",
+        path: "/page",
+        detail: "secret",
+      });
     });
 
-    expect(() => {
-      detectSTTF("/page#:~:text=test");
-    }).not.toThrow();
+    it("includes all directives in event detail", () => {
+      extractSTTFDirectives("/page#:~:text=one&text=two");
+
+      expect(events[0].detail).toBe("one;two");
+    });
+
+    it("returns false and emits no events when no STTF present", () => {
+      const result = extractSTTFDirectives("/page#section");
+
+      expect(result).toBe(false);
+      expect(events).toHaveLength(0);
+    });
+
+    it("never throws even when telemetry sink throws", () => {
+      registerTelemetrySink(() => {
+        throw new Error("sink failure");
+      });
+
+      expect(() => {
+        extractSTTFDirectives("/page#:~:text=test");
+      }).not.toThrow();
+    });
+
+    it("omits path when not provided", () => {
+      extractSTTFDirectives("/page#:~:text=test");
+
+      expect(events[0].path).toBeUndefined();
+    });
   });
 });

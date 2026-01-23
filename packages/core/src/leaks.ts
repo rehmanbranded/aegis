@@ -1,30 +1,56 @@
 import { emitEvent } from "./telemetry.js";
-import { getTextFragmentsFromURL } from "./utils.js";
+import { parseSTTFFromURL } from "./utils.js";
 
 /**
  * @public
  *
  * @summary
- * Detects Scroll-To-Text Fragment (STTF) based XS-Leak signals.
+ * Extracts and reports Scroll-To-Text Fragment (STTF) directives from a URL string.
  *
- * @param url - Request URL (absolute or relative) to inspect.
- * @returns `true` if one or more STTF directives are present, otherwise `false`.
+ * @param url - Arbitrary URL string to inspect for STTF syntax.
+ * @param path - Optional logical request path for telemetry context.
+ * @returns `true` if STTF directives are present, otherwise `false`.
  *
  * @remarks
- * This function performs **presence-based detection only**.
+ * This function performs **syntactic extraction only** and does NOT detect
+ * real-world XS-Leak attacks.
  *
- * - Detection does **not** imply exploitability
- * - No DOM state, scroll behavior, or rendering is evaluated
- * - Semantic interpretation of fragments is intentionally avoided
- * - Presence alone is treated as a reconnaissance signal
+ * **Critical Limitation:**
+ * Hash fragments (everything after `#`) are NOT transmitted in standard HTTP
+ * requests. This function is useful ONLY when the URL string is:
+ * - Explicitly sent by client-side code (e.g., analytics beacons)
+ * - Passed as query parameters or request body
+ * - Constructed server-side with full URL context
  *
- * When detection occurs, a structured {@link XSLeakEvent} is
- * emitted via the registered telemetry sink.
+ * **This function CANNOT detect STTF attacks from normal browser navigations.**
+ * For real-world attack detection, use client-side instrumentation.
  *
- * @see {@link getTextFragmentsFromURL}
+ * When STTF syntax is detected, a structured {@link XSLeakEvent} is emitted
+ * via the registered telemetry sink for audit purposes.
+ *
+ * @see {@link parseSTTFFromURL}
+ *
+ * @example
+ * ```typescript
+ * // Valid use case: Client explicitly reports navigation
+ * app.post('/api/report-navigation', (req, res) => {
+ *   extractSTTFDirectives(req.body.fullUrl, req.body.path);
+ *   res.sendStatus(204);
+ * });
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Invalid use case: Standard Express middleware
+ * app.use((req, res, next) => {
+ *   // This will NOT work - req.url does not contain hash fragments
+ *   extractSTTFDirectives(req.url);
+ *   next();
+ * });
+ * ```
  */
-export function detectSTTF(url: string): boolean {
-  const fragments = getTextFragmentsFromURL(url);
+export function extractSTTFDirectives(url: string, path?: string): boolean {
+  const fragments = parseSTTFFromURL(url);
 
   if (!fragments) {
     return false;
@@ -34,6 +60,7 @@ export function detectSTTF(url: string): boolean {
     kind: "XS_LEAK",
     level: "INFO",
     vector: "STTF",
+    path,
     detail: fragments.join(";"),
     timestamp: Date.now(),
   });

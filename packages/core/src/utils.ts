@@ -1,31 +1,46 @@
 /**
- * @internal
+ * @public
  *
  * @summary
- * Extracts Scroll-To-Text Fragment (STTF) directives from a URL.
+ * Parses Scroll-To-Text Fragment (STTF) directives from a URL string.
  *
  * @param url - Absolute or relative URL string to inspect.
- * @returns An array of decoded STTF directives, or `null` if none are present.
- *
- * @example
- * ```text
- * /page#:~:text=secret              => ["secret"]
- * /page#:~:text=start,end           => ["start,end"]
- * /page#:~:text=pre-,text,-suf      => ["pre-,text,-suf"]
- * /page#:~:text=one&text=two        => ["one", "two"]
- * ```
+ * @returns Array of decoded STTF text directives, or `null` if none are present.
  *
  * @remarks
- * This function performs **syntactic extraction only**.
+ * This is a pure parsing function with no side effects.
  *
- * - Does not validate DOM state or scroll behavior
- * - Does not interpret fragment semantics
- * - Does not emit telemetry
+ * **STTF Syntax:**
+ * - Prefix: `#:~:`
+ * - Single text: `#:~:text=searchTerm`
+ * - Range: `#:~:text=startText,endText`
+ * - Context: `#:~:text=prefix-,text,-suffix`
+ * - Multiple: `#:~:text=one&text=two`
  *
- * Presence of extracted directives is treated as a signal
- * **only by higher-level detectors**.
+ * **Parsing Behavior:**
+ * - Invalid URLs return `null` (no exceptions thrown)
+ * - Malformed percent-encoding is preserved as-is
+ * - Empty text directives are filtered out
+ * - Does not validate fragment semantics
+ *
+ * @see {@link https://wicg.github.io/scroll-to-text-fragment/}
+ *
+ * @example
+ * ```typescript
+ * parseSTTFFromURL('/page#:~:text=secret')
+ * // => ["secret"]
+ *
+ * parseSTTFFromURL('/page#:~:text=start,end')
+ * // => ["start,end"]
+ *
+ * parseSTTFFromURL('/page#:~:text=one&text=two')
+ * // => ["one", "two"]
+ *
+ * parseSTTFFromURL('/page#section')
+ * // => null
+ * ```
  */
-export function getTextFragmentsFromURL(url: string): string[] | null {
+export function parseSTTFFromURL(url: string): string[] | null {
   try {
     const parsedUrl = new URL(url, "http://localhost");
     const hash = parsedUrl.hash;
@@ -36,8 +51,14 @@ export function getTextFragmentsFromURL(url: string): string[] | null {
 
     const directivePart = hash.slice(4);
     const params = new URLSearchParams(directivePart);
+    const texts = params.getAll("text");
 
-    const texts = params.getAll("text").map((value) => {
+    if (texts.length === 0) {
+      return null;
+    }
+
+    // Attempt to decode each text directive, preserving original if decoding fails
+    const decoded = texts.map((value) => {
       try {
         return decodeURIComponent(value);
       } catch {
@@ -45,9 +66,9 @@ export function getTextFragmentsFromURL(url: string): string[] | null {
       }
     });
 
-    return texts.length > 0 ? texts : null;
+    return decoded;
   } catch {
-    // Invalid or unparsable URLs are ignored by design
+    // Malformed URLs or parsing errors result in no detection
     return null;
   }
 }

